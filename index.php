@@ -1,39 +1,43 @@
 <?php
-    // Configuração de conexão com o banco de dados
+    // Configuração para conexão com banco de dados
     $servername = "localhost";
     $username = "root";
     $password = "";
     $dbname = "BD";
 
-    // Cria a conexão
+    // Cria a conexão com o banco de dados MySQL
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    // Checa a conexão
+    // Checa se a conexão foi estabelecida corretamente
     if ($conn->connect_error) {
         die("Conexão falhou: " . $conn->connect_error);
     }
 
-    // Função para adicionar dados
+    // Função para adicionar novos registros de usuário
     if (isset($_POST['action']) && $_POST['action'] == 'create') {
         $nome = $_POST['nome'];
         $email = $_POST['email'];
 
+        // Monta o comando SQL para inserção de dados na tabela Usuarios
         $sql = "INSERT INTO Usuarios (nome, email) VALUES ('$nome', '$email')";
 
+        // Executa o comando SQL e verifica se foi bem-sucedido
         if ($conn->query($sql) === TRUE) {
             echo "Novo registro criado com sucesso<br>";
         } else {
-            echo "Erro: " . $sql . "<br>" . $conn->error;
+            echo "Erro ao executar o comando: " . $sql . "<br>" . $conn->error;
         }
     }
 
-    // Função para ler dados
+    // Função para ler todos os registros de usuários
     if (isset($_POST['action']) && $_POST['action'] == 'read') {
+        // Comando SQL para selecionar todos os registros da tabela Usuarios
         $sql = "SELECT id, nome, email FROM Usuarios";
         $result = $conn->query($sql);
 
+        // Verifica se há registros retornados
         if ($result->num_rows > 0) {
-            // Output de dados em cada linha
+            // Loop para exibir cada registro encontrado
             while($row = $result->fetch_assoc()) {
                 echo "ID: " . $row["id"]. " - Nome: " . $row["nome"]. " - Email: " . $row["email"]. "<br>";
             }
@@ -42,14 +46,16 @@
         }
     }
 
-    // Função para atualizar dados
+    // Função para atualizar um registro de usuário existente
     if (isset($_POST['action']) && $_POST['action'] == 'update') {
         $id = $_POST['id'];
         $nome = $_POST['nome'];
         $email = $_POST['email'];
 
+        // Comando SQL para atualizar um registro na tabela Usuarios
         $sql = "UPDATE Usuarios SET nome='$nome', email='$email' WHERE id=$id";
 
+        // Executa o comando SQL de atualização e verifica o resultado
         if ($conn->query($sql) === TRUE) {
             echo "Registro atualizado com sucesso<br>";
         } else {
@@ -57,12 +63,14 @@
         }
     }
 
-    // Função para excluir dados
+    // Função para excluir um registro de usuário
     if (isset($_POST['action']) && $_POST['action'] == 'delete') {
         $id = $_POST['id'];
 
+        // Comando SQL para excluir um registro da tabela Usuarios
         $sql = "DELETE FROM Usuarios WHERE id=$id";
 
+        // Executa o comando SQL de exclusão e verifica o resultado
         if ($conn->query($sql) === TRUE) {
             echo "Registro excluído com sucesso<br>";
         } else {
@@ -74,9 +82,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Inclui um arquivo CSS externo para estilizar a página -->
     <link rel="stylesheet" href="src/css/style.css">
 </head>
 <body>
+    <!-- Formulários HTML para interagir com as funções PHP -->
 
     <h2>Formulário para Adicionar Usuário</h2>
     <form method="post">
@@ -109,10 +119,12 @@
     </form>
 
     <?php
-    // Verificar se há mensagens de sucesso ou erro para exibir
+    // Verifica se há mensagens de sucesso ou erro para exibir na página
     if (isset($_GET['message'])) {
         $message = $_GET['message'];
+        // Determina a classe CSS com base no tipo de mensagem (sucesso ou erro)
         $class = $_GET['class'] == 'error' ? 'error' : 'result';
+        // Exibe a mensagem com a classe de estilo apropriada
         echo '<div class="' . $class . '">' . $message . '</div>';
     }
     ?>
@@ -121,6 +133,6 @@
 </html>
 
 <?php
-    // Fecha a conexão com o banco de dados
+    // Fecha a conexão com o banco de dados após todas as operações
     $conn->close();
 ?>
