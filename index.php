@@ -17,9 +17,10 @@
     if (isset($_POST['action']) && $_POST['action'] == 'create') {
         $nome = $_POST['nome'];
         $email = $_POST['email'];
+        $mensagem = $_POST['mensagem'];
 
         // Monta o comando SQL para inserção de dados na tabela Usuarios
-        $sql = "INSERT INTO Usuarios (nome, email) VALUES ('$nome', '$email')";
+        $sql = "INSERT INTO Usuarios (nome, email, mensagem) VALUES ('$nome', '$email', '$mensagem')";
 
         // Executa o comando SQL e verifica se foi bem-sucedido
         if ($conn->query($sql) === TRUE) {
@@ -30,16 +31,16 @@
     }
 
     // Função para ler todos os registros de usuários
-    if (isset($_POST['action']) && $_POST['action'] == 'read') {
+    if (isset($_POST['action']) && $_POST['action'] && $_POST['action'] == 'read') {
         // Comando SQL para selecionar todos os registros da tabela Usuarios
-        $sql = "SELECT id, nome, email FROM Usuarios";
+        $sql = "SELECT id, nome, email, mensagem FROM Usuarios";
         $result = $conn->query($sql);
 
         // Verifica se há registros retornados
         if ($result->num_rows > 0) {
             // Loop para exibir cada registro encontrado
             while($row = $result->fetch_assoc()) {
-                echo "ID: " . $row["id"]. " - Nome: " . $row["nome"]. " - Email: " . $row["email"]. "<br>";
+                echo "ID: " . $row["id"]. " - Nome: " . $row["nome"]. " - Email: " . $row["email"]. " - Mensagem: " .$row["mensagem"] . "<br>";
             }
         } else {
             echo "0 resultados";
@@ -47,13 +48,14 @@
     }
 
     // Função para atualizar um registro de usuário existente
-    if (isset($_POST['action']) && $_POST['action'] == 'update') {
+    if (isset($_POST['action']) && $_POST['action'] && $_POST['action'] == 'update') {
         $id = $_POST['id'];
         $nome = $_POST['nome'];
         $email = $_POST['email'];
+        $mensagem = $_POST['mensagem'];
 
         // Comando SQL para atualizar um registro na tabela Usuarios
-        $sql = "UPDATE Usuarios SET nome='$nome', email='$email' WHERE id=$id";
+        $sql = "UPDATE Usuarios SET nome='$nome', email='$email', mensagem='$mensagem' WHERE id=$id";
 
         // Executa o comando SQL de atualização e verifica o resultado
         if ($conn->query($sql) === TRUE) {
@@ -64,7 +66,7 @@
     }
 
     // Função para excluir um registro de usuário
-    if (isset($_POST['action']) && $_POST['action'] == 'delete') {
+    if (isset($_POST['action']) && $_POST['action'] && $_POST['action'] == 'delete') {
         $id = $_POST['id'];
 
         // Comando SQL para excluir um registro da tabela Usuarios
@@ -93,6 +95,7 @@
         <input type="hidden" name="action" value="create">
         Nome: <input type="text" name="nome"><br>
         Email: <input type="text" name="email"><br>
+        Mensagem: <input type="text" name="mensagem"><br>
         <input type="submit" value="Adicionar">
     </form>
 
@@ -108,6 +111,7 @@
         ID: <input type="text" name="id"><br>
         Novo Nome: <input type="text" name="nome"><br>
         Novo Email: <input type="text" name="email"><br>
+        Nova Mensagem: <input type="text" name="mensagem"><br>
         <input type="submit" value="Atualizar">
     </form>
 
