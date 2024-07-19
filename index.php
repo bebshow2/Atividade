@@ -48,14 +48,39 @@
     }
 
     // Função para atualizar um registro de usuário existente
-    if (isset($_POST['action']) && $_POST['action'] && $_POST['action'] == 'update') {
-        $id = $_POST['id'];
-        $nome = $_POST['nome'];
-        $email = $_POST['email'];
-        $mensagem = $_POST['mensagem'];
+if (isset($_POST['action']) && $_POST['action'] == 'update') {
+    $id = $_POST['id'];
 
-        // Comando SQL para atualizar um registro na tabela Usuarios
-        $sql = "UPDATE Usuarios SET nome='$nome', email='$email', mensagem='$mensagem' WHERE id=$id";
+    // Construção da consulta SQL inicial
+    $sql = "UPDATE Usuarios SET ";
+
+    // Array para armazenar as partes da consulta SQL
+    $updates = array();
+
+    // Verifica e adiciona os campos que foram enviados
+    if (isset($_POST['nome'])) {
+        $nome = $_POST['nome'];
+        if (!empty($nome)) {
+            $updates[] = "nome='$nome'";
+        }
+    }
+    if (isset($_POST['email'])) {
+        $email = $_POST['email'];
+        if (!empty($email)) {
+            $updates[] = "email='$email'";
+        }
+    }
+    if (isset($_POST['mensagem'])) {
+        $mensagem = $_POST['mensagem'];
+        if (!empty($mensagem)) {
+            $updates[] = "mensagem='$mensagem'";
+        }
+    }
+
+    // Se houver campos para atualizar, monta a consulta SQL completa
+    if (!empty($updates)) {
+        $sql .= implode(", ", $updates);
+        $sql .= " WHERE id=$id";
 
         // Executa o comando SQL de atualização e verifica o resultado
         if ($conn->query($sql) === TRUE) {
@@ -63,7 +88,12 @@
         } else {
             echo "Erro ao atualizar registro: " . $conn->error;
         }
+    } else {
+        echo "Nenhum dado foi fornecido para atualização.";
     }
+}
+
+
 
     // Função para excluir um registro de usuário
     if (isset($_POST['action']) && $_POST['action'] && $_POST['action'] == 'delete') {
